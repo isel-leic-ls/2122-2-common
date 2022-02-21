@@ -18,6 +18,8 @@ repositories {
 }
 
 dependencies {
+    implementation(fileTree("vendor/main") { this.include("*.jar") })
+    testImplementation(fileTree("vendor/test") { this.include("*.jar") })
     testImplementation("org.jetbrains.kotlin:kotlin-test:$kotlinPluginVersion")
 }
 
