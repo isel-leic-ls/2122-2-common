@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import pt.isel.ls.indexOfBinary
 import pt.isel.ls.max
+import kotlin.test.assertFailsWith
 
 class IntsTests {
     @Test
@@ -29,17 +30,19 @@ class IntsTests {
     }
 
     @Test
-    @Throws(IllegalArgumentException::class)
     fun indexOfBinary_throws_IllegalArgumentException_if_indexes_are_not_valid() {
-        // Arrange
-        val v = intArrayOf(1, 2, 3)
+        assertFailsWith<IllegalArgumentException> {
+            // Arrange
+            val v = intArrayOf(1, 2, 3)
 
-        // Act
-        val ix: Int = indexOfBinary(v, 2, 1, 4)
+            // Act
+            val ix: Int = indexOfBinary(v, 2, 1, 4)
 
-        // Assert
-        assertTrue(ix < 0)
+            // Assert
+            assertTrue(ix < 0)
+        }
     }
+
 
     @Test
     fun indexOfBinary_right_bound_parameter_is_exclusive() {
