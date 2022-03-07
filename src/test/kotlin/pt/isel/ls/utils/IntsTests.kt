@@ -1,12 +1,11 @@
 package pt.isel.ls.utils
 
-
-import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertTrue
-import org.junit.jupiter.api.Test
+import kotlin.test.Test
+import kotlin.test.assertEquals
 import pt.isel.ls.indexOfBinary
 import pt.isel.ls.max
 import kotlin.test.assertFailsWith
+import kotlin.test.assertTrue
 
 class IntsTests {
     @Test
