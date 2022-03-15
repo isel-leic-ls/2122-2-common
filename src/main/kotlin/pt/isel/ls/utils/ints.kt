@@ -1,4 +1,4 @@
-package pt.isel.ls
+package pt.isel.ls.utils
 
 /**
  * Returns the maximum integer between two integer operands.

@@ -2,8 +2,6 @@ package pt.isel.ls.utils
 
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import pt.isel.ls.indexOfBinary
-import pt.isel.ls.max
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
