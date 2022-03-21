@@ -1,0 +1,147 @@
+openapi: 3.0.1
+info:
+  title: Students API
+  description: 'Manage Students'
+  termsOfService: http://swagger.io/terms/
+  version: 1.0.0
+tags:
+  - name: Students
+    description: Students List.
+
+paths:
+  /students:
+    get:
+      tags:
+        - Students
+      summary: Lists all students
+      description: List all students, number and name
+      parameters:
+        - name: limit
+          in: query
+          description: Limits the number of Students returned
+          required: false
+          schema:
+            type: integer
+      responses:
+        200:
+          description: the list of students
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentListResponse'
+    post:
+      tags:
+        - Students
+      summary: Adds a new student to the list
+      requestBody:
+        description: Student information
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Student'
+      responses:
+        200:
+          description: The student was added to the list with success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudentAddedResponse'
+        400:
+          description: A student with such number exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+
+  /students/{number}:
+    get:
+      tags:
+        - Students
+      summary: Returns student details
+      description: Returns a single student
+      parameters:
+        - name: number
+          in: path
+          description: Number of student to return
+          required: true
+          schema:
+            type: integer
+          example: 472349
+      responses:
+        200:
+          description: Student found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Student'
+        404:
+          description: Student not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppError'
+
+components:
+  schemas:
+    AppError:
+      type: object
+      description: Application error
+      required:
+        - code
+        - name
+        - message
+      properties:
+        code:
+          type: number
+          format: integer
+          description: Internal error code
+          example: 1000
+        name:
+          type: string
+          description: Internal error name
+          example: FAIL
+        message:
+          type: string
+          description: Error description message
+          example: An error occurred
+    StudentAddedResponse:
+      type: object
+      description: Student successfully added to list
+      required:
+        - number
+      properties:
+        number:
+          type: integer
+    StudentResponse:
+      type: object
+      description: Response with a student
+      properties:
+        student:
+          $ref: '#/components/schemas/Student'
+
+    StudentListResponse:
+      type: object
+      description: Response with a list of students
+      properties:
+        students:
+          type: array
+          items:
+            $ref: '#/components/schemas/Student'
+
+    Student:
+      type: object
+      description: Student data
+      required:
+        - number
+        - name
+        - email
+      properties:
+        number:
+          type: integer
+          description: student number
+          example: 467237
+        name:
+          type: string
+          description: student name
+          example: Filipe
