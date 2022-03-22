@@ -1,5 +1,6 @@
 package pt.isel.ls.http
 
+import kotlinx.datetime.Clock
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
@@ -50,6 +51,12 @@ fun postStudent(request: Request): Response {
         .body(Json.encodeToString(std))
 }
 
+fun getDate(request: Request): Response {
+    return Response(OK)
+        .header("content-type", "application/json")
+        .body(Json.encodeToString(Clock.System.now()))
+}
+
 fun printRequest(request: Request) {
     println("Method ${request.method}")
     println("Uri ${request.uri}")
@@ -62,7 +69,8 @@ fun main() {
     val app = routes(
         "students" bind GET to ::getStudents,
         "students/{number}" bind GET to ::getStudent,
-        "students" bind POST to ::postStudent
+        "students" bind POST to ::postStudent,
+        "date" bind GET to ::getDate
     )
 
     val jettyServer = app.asServer(Jetty(9000)).start()
