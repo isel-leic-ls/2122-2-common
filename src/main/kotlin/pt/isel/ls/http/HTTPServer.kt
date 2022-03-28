@@ -16,6 +16,9 @@ import org.http4k.routing.path
 import org.http4k.routing.routes
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
+import org.slf4j.LoggerFactory
+
+private val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
 
 @Serializable
 data class Student(val name: String, val number: Int)
@@ -27,7 +30,7 @@ val students = mutableListOf(
 )
 
 fun getStudents(request: Request): Response {
-    printRequest(request)
+    logRequest(request)
     val limit = request.query("limit")?.toInt() ?: 2
     return Response(OK)
         .header("content-type", "application/json")
@@ -35,7 +38,7 @@ fun getStudents(request: Request): Response {
 }
 
 fun getStudent(request: Request): Response {
-    printRequest(request)
+    logRequest(request)
     val stdNumber = request.path("number")?.toInt()
     return Response(OK)
         .header("content-type", "application/json")
@@ -43,7 +46,7 @@ fun getStudent(request: Request): Response {
 }
 
 fun postStudent(request: Request): Response {
-    printRequest(request)
+    logRequest(request)
     val std = Json.decodeFromString<Student>(request.bodyString())
     students.add(std)
     return Response(CREATED)
@@ -53,28 +56,38 @@ fun postStudent(request: Request): Response {
 
 fun getDate(request: Request): Response {
     return Response(OK)
-        .header("content-type", "application/json")
-        .body(Json.encodeToString(Clock.System.now()))
+        .header("content-type", "text/plain")
+        .body(Clock.System.now().toString())
 }
 
-fun printRequest(request: Request) {
-    println("Method ${request.method}")
-    println("Uri ${request.uri}")
-    println("Header content-type ${request.header("content-type")}")
-    println("Header accept ${request.header("accept")}")
+fun logRequest(request: Request) {
+    logger.info(
+        "incoming request: method={}, uri={}, content-type={} accept={}",
+        request.method,
+        request.uri,
+        request.header("content-type"),
+        request.header("accept")
+    )
 }
 
 fun main() {
 
-    val app = routes(
+    val studentRoutes = routes(
         "students" bind GET to ::getStudents,
         "students/{number}" bind GET to ::getStudent,
-        "students" bind POST to ::postStudent,
+        "students" bind POST to ::postStudent
+    )
+
+    val app = routes(
+        studentRoutes,
         "date" bind GET to ::getDate
     )
 
     val jettyServer = app.asServer(Jetty(9000)).start()
+    logger.info("server started listening")
 
     readln()
     jettyServer.stop()
+
+    logger.info("leaving Main")
 }

@@ -14,7 +14,8 @@ dependencies {
     implementation(group = "org.http4k", name = "http4k-server-jetty", version = "4.20.2.0")
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version = "1.3.2")
     implementation(group = "org.jetbrains.kotlinx", name = "kotlinx-datetime", version = "0.3.2")
-    runtimeOnly(group = "org.slf4j", name = "slf4j-simple", version = "2.0.0-alpha6")
+    implementation(group = "org.slf4j", name = "slf4j-api", version = "2.0.0-alpha5")
+    runtimeOnly(group = "org.slf4j", name = "slf4j-simple", version = "2.0.0-alpha5")
     testImplementation(kotlin("test"))
 }
 
