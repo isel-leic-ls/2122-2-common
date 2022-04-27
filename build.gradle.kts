@@ -19,7 +19,19 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
+
+tasks.named<Jar>("jar") {
+    dependsOn("copyRuntimeDependencies")
+    manifest {
+        attributes["Main-Class"] = "pt.isel.ls.http.HTTPServerKt"
+        attributes["Class-Path"] = configurations.runtimeClasspath.get().joinToString(" ") { it.name }
+    }
+}
 tasks.register<Copy>("copyRuntimeDependencies") {
-    into("build/libs")
     from(configurations.runtimeClasspath)
+    into("$buildDir/libs")
+}
+
+configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
+    ignoreFailures.set(true)
 }
