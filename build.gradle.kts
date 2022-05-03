@@ -32,6 +32,3 @@ tasks.register<Copy>("copyRuntimeDependencies") {
     into("$buildDir/libs")
 }
 
-configure<org.jlleitschuh.gradle.ktlint.KtlintExtension> {
-    ignoreFailures.set(true)
-}
