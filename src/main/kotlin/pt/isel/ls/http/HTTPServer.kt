@@ -86,7 +86,8 @@ fun main() {
         singlePageApp(ResourceLoader.Directory("static-content"))
     )
 
-    val jettyServer = app.asServer(Jetty(9000)).start()
+    val port = System.getenv("PORT")?.toIntOrNull() ?: 9000
+    val jettyServer = app.asServer(Jetty(port)).start()
     logger.info("server started listening")
 
     readln()

@@ -13,8 +13,6 @@ or
 Note: You have to use the DOM Api, but not directly
 */
 
-const API_BASE_URL = "http://localhost:9000/"
-
 function getHome(mainContent){
 
     const h1 = document.createElement("h1")
@@ -24,7 +22,7 @@ function getHome(mainContent){
 }
 
 function getStudents(mainContent){
-    fetch(API_BASE_URL + "students")
+    fetch("/students")
         .then(res => res.json())
         .then(students => {
             const div = document.createElement("div")
@@ -54,7 +52,7 @@ function getStudents(mainContent){
 }
 
 function getStudent(mainContent){
-    fetch(API_BASE_URL + "students/10")
+    fetch("/students/10")
         .then(res => res.json())
         .then(student => {
             const ulStd = document.createElement("ul")
@@ -125,7 +123,7 @@ function createStudent(mainContent){
                         number : inputNumber.value
                     })
                 }
-                fetch(API_BASE_URL + "students", options)
+                fetch("/students", options)
                     .then(res => res.json())
                     .then(student => {
                         console.log(student)

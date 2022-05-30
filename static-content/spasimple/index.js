@@ -26,7 +26,7 @@ function hashChangeHandler(){
     }
 
     function students() {
-        fetch("http://localhost:9000/students")
+        fetch("/students")
             .then(res => res.json())
             .then(students => {
                 const text = document.createTextNode(JSON.stringify(students));
@@ -35,7 +35,7 @@ function hashChangeHandler(){
     }
 
     function studentDetails() {
-        fetch("http://localhost:9000/students/10")
+        fetch("/students/10")
             .then(res => res.json())
             .then(student => {
                 console.log(student)

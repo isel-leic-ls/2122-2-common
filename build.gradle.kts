@@ -19,7 +19,6 @@ dependencies {
     testImplementation(kotlin("test"))
 }
 
-
 tasks.named<Jar>("jar") {
     dependsOn("copyRuntimeDependencies")
     manifest {
@@ -31,4 +30,3 @@ tasks.register<Copy>("copyRuntimeDependencies") {
     from(configurations.runtimeClasspath)
     into("$buildDir/libs")
 }
-
