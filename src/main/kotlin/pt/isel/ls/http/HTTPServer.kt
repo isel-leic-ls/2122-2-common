@@ -18,6 +18,7 @@ import org.http4k.routing.routes
 import org.http4k.routing.singlePageApp
 import org.http4k.server.Jetty
 import org.http4k.server.asServer
+import org.postgresql.ds.PGSimpleDataSource
 import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("pt.isel.ls.http.HTTPServer")
@@ -33,7 +34,7 @@ val students = mutableListOf(
 
 fun getStudents(request: Request): Response {
     logRequest(request)
-    val limit = request.query("limit")?.toInt() ?: 5
+    val limit = request.query("limit")?.toInt() ?: 4
     return Response(OK)
         .header("content-type", "application/json")
         .body(Json.encodeToString(students.take(limit)))
@@ -51,6 +52,7 @@ fun postStudent(request: Request): Response {
     logRequest(request)
     val std = Json.decodeFromString<Student>(request.bodyString())
     students.add(std)
+    logger.info(students.toString())
     return Response(CREATED)
         .header("content-type", "application/json")
         .body(Json.encodeToString(std))
@@ -60,6 +62,26 @@ fun getDate(request: Request): Response {
     return Response(OK)
         .header("content-type", "text/plain")
         .body(Clock.System.now().toString())
+}
+
+fun getStudentsFromPostgres(request: Request): Response {
+    logRequest(request)
+    val dataSource = PGSimpleDataSource()
+    val jdbcDatabaseURL = System.getenv("JDBC_DATABASE_URL")
+        ?: "jdbc:postgresql://localhost/postgres?user=postgres&password=postgres"
+    dataSource.setURL(jdbcDatabaseURL)
+
+    val pStudents = mutableListOf<Student>()
+    dataSource.connection.use {
+        val stm = it.prepareStatement("select name,number from students")
+        val rs = stm.executeQuery()
+        while (rs.next()) {
+            pStudents.add(Student(rs.getString("name"), rs.getInt("number")))
+        }
+    }
+    return Response(OK)
+        .header("content-type", "application/json")
+        .body(Json.encodeToString(pStudents))
 }
 
 fun logRequest(request: Request) {
@@ -83,10 +105,11 @@ fun main() {
     val app = routes(
         studentRoutes,
         "date" bind GET to ::getDate,
+        "postgres/students" bind GET to ::getStudentsFromPostgres,
         singlePageApp(ResourceLoader.Directory("static-content"))
     )
 
-    val port = System.getenv("PORT")?.toIntOrNull() ?: 9000
+    val port = System.getenv("PORT")?.toIntOrNull() ?: 8080
     val jettyServer = app.asServer(Jetty(port)).start()
     logger.info("server started listening")
 
